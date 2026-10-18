@@ -1,0 +1,13 @@
+CALCULADORA DE DOS POLEAS · INSTALAR EN IPHONE
+
+1. En tu ordenador, entra en https://app.netlify.com/drop
+2. Arrastra esta carpeta (app_poleas_para_iphone) a la zona de publicación.
+3. Guarda la dirección https://...netlify.app que te proporcionen.
+4. Ábrela en Safari del iPhone.
+5. Pulsa Compartir y "Añadir a pantalla de inicio"; selecciona "Abrir como app web" si aparece.
+6. Entra una vez con internet. Después, la app podrá funcionar sin conexión al conservar sus archivos en el navegador.
+
+IMPORTANTE: Las combinaciones guardadas se almacenan en cada navegador/dispositivo, NO en la nube.
+Pulsa "Exportar copia de seguridad" de vez en cuando y guarda el JSON en Archivos/iCloud Drive.
+Para cambiar de dispositivo usa "Importar copia".
+La versión HTML suelta sirve para abrirla en un ordenador, pero iOS puede no ejecutar el JavaScript si abres un HTML desde Archivos.

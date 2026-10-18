@@ -1,0 +1,421 @@
+<!doctype html>
+<html lang="es">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="dark"><meta name="theme-color" content="#0b1020"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="Mis poleas"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icono-192.png"><title>Calculadora de 2 poleas · inventarios separados</title>
+<style>
+:root{--bg:#0b1020;--surface:#141b2d;--surface2:#1a2338;--border:#2d374f;--ink:#f3f6ff;--muted:#aebbd3;--mint:#7ce2bf;--blue:#8caeff;--gold:#f4bd78;--bad:#ffc2bb;--shadow:0 14px 40px #0003}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse 80% 28% at 50% -8%,#26395a 0,transparent 75%),var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+.shell{max-width:1050px;margin:auto;padding:28px 20px 76px}
+.logo{display:inline-grid;place-items:center;background:#263f48;color:var(--mint);width:43px;height:43px;border-radius:13px;font-size:23px;flex:none}
+.head{display:flex;gap:14px;align-items:center;margin-bottom:12px}.eyebrow{font-size:11px;color:var(--mint);letter-spacing:.15em;text-transform:uppercase;font-weight:800;margin:0 0 2px}h1{font-size:clamp(26px,4vw,39px);letter-spacing:-.04em;line-height:1.08;margin:0}h2{font-size:20px;letter-spacing:-.02em;margin:0}h3{font-size:16px;margin:0}p{margin:0}p.lead{color:var(--muted);max-width:720px;margin:12px 0 25px}
+.panel{border:1px solid var(--border);border-radius:20px;background:var(--surface);box-shadow:var(--shadow);padding:23px;margin-bottom:18px}
+.panel-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:18px}.hint{color:var(--muted);font-size:13px;margin-top:4px}.tag{background:#22334a;color:var(--mint);border:1px solid #345563;padding:5px 10px;border-radius:99px;white-space:nowrap;font-size:12px;font-weight:700}
+.targets{display:grid;grid-template-columns:1fr 1fr;gap:16px}.target{background:var(--surface2);border:1px solid var(--border);border-radius:15px;padding:17px}.target:nth-child(1){border-top:3px solid var(--mint)}.target:nth-child(2){border-top:3px solid var(--blue)}label{display:block;font-weight:750;font-size:14px;margin-bottom:8px}.unit-field{position:relative}.unit-field input{width:100%;padding-right:55px}.unit-field:after{content:'kg';position:absolute;right:17px;top:50%;transform:translateY(-50%);color:var(--muted);font-weight:800;pointer-events:none}
+input{appearance:textfield;-moz-appearance:textfield;color:var(--ink);background:#0c1425;border:1px solid #40506b;border-radius:11px;padding:12px 13px;font:inherit;font-weight:700;outline:none;min-width:0}input:focus{border-color:var(--mint);box-shadow:0 0 0 3px #7ce2bf22}input::-webkit-inner-spin-button,input::-webkit-outer-spin-button{opacity:.6}.target input{font-size:27px}.side-info{font-size:13px;color:var(--muted);margin-top:8px}
+.quick{display:flex;flex-wrap:wrap;gap:7px;margin:15px 0 0}.pill{background:#23304b;color:#d9e3f8;padding:7px 12px;border:1px solid #3e4a62;border-radius:99px;cursor:pointer;font:700 12px/1.2 inherit}.pill:hover{border-color:var(--mint);color:white}
+.actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:18px}button{cursor:pointer;font:inherit;font-weight:750;border:0}button:disabled{opacity:.6;cursor:progress}.main-btn{background:var(--mint);color:#082d26;border-radius:12px;padding:13px 22px;font-size:16px}.main-btn:hover{background:#a2f4d8}.secondary{border:1px solid #455570;color:var(--ink);background:#263249;border-radius:11px;padding:10px 14px;font-size:13px}.secondary:hover{background:#354560}.small-link{color:var(--muted);background:none;border:none;padding:7px;font-size:13px;text-decoration:underline;text-underline-offset:3px}
+.sep{height:1px;background:var(--border);margin:20px 0}.flexrow{display:flex;gap:12px;align-items:center;flex-wrap:wrap;justify-content:space-between}.inventory-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:15px}.disc{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:7px;border:1px solid var(--border);background:#10192c;border-radius:12px;padding:11px 12px}.disc .weight{min-width:58px;font-size:14px;font-weight:800}.disc .sub{font-size:11px;color:var(--muted)}.disc input{width:65px;padding:7px;font-size:16px;text-align:center}.remove{font-size:20px;color:#afbdd4;cursor:pointer;border:0;background:transparent;padding:0 2px}.remove:hover{color:#ffb5ad}
+.add-disc{display:flex;gap:8px;align-items:end;flex-wrap:wrap;margin-top:15px}.add-disc label{font-size:12px;color:var(--muted);margin-bottom:5px}.add-disc input{width:112px}.add-disc .secondary{min-height:47px}.optionbox{margin-top:16px;padding-top:15px;border-top:1px solid var(--border);display:flex;gap:14px;align-items:center;flex-wrap:wrap}.optionbox label{margin:0}.optionbox input{width:90px;padding:8px}.optionbox .hint{flex:1;min-width:220px;margin:0}
+.notice{background:#203349;color:#d8eafb;border:1px solid #38536b;padding:12px 16px;border-radius:12px;font-size:14px;margin-top:16px}.error{color:var(--bad);background:#452a32;border:1px solid #84505a}.success{color:var(--mint);background:#193934;border:1px solid #31675a}.result{display:none}.result.visible{display:block}.result-header{display:flex;justify-content:space-between;gap:10px;align-items:start;flex-wrap:wrap;margin-bottom:15px}.result-topline{color:var(--mint);font-weight:800;font-size:12px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px}.result-summary{color:var(--muted);font-size:13px}.result-buttons{display:flex;gap:8px;flex-wrap:wrap}.poleas{display:grid;grid-template-columns:1fr 1fr;gap:14px}.pulley{background:var(--surface2);border:1px solid var(--border);padding:16px;border-radius:15px}.pulley.p1{border-top:3px solid var(--mint)}.pulley.p2{border-top:3px solid var(--blue)}.pulley-title{display:flex;justify-content:space-between;gap:8px;align-items:center;margin-bottom:15px}.pulley-title .kg{font-size:21px;font-weight:850;white-space:nowrap}.lane{border-top:1px solid var(--border);padding-top:12px;margin-top:12px}.lane-head{display:flex;justify-content:space-between;align-items:center;gap:9px;font-size:14px;font-weight:700;margin-bottom:10px}.lane-head .load{color:#dbe9fa}.chips{display:flex;gap:6px;flex-wrap:wrap}.chip{font-size:13px;border:1px solid #3b5070;background:#12283e;color:#e8f6ff;font-weight:750;padding:5px 9px;border-radius:8px}.empty{font-size:13px;color:var(--muted);font-style:italic}.footnotes{margin-top:15px;font-size:13px;color:var(--muted)}.leftovers{background:#10192a;border:1px solid var(--border);border-radius:12px;padding:13px 16px;margin-top:15px}.leftovers strong{color:var(--ink)}.leftovers .chips{margin-top:8px}
+.footer{font-size:12px;color:#92a4bf;max-width:950px;margin-top:23px;line-height:1.65}.footer strong{color:#d9e8ff}.muted{color:var(--muted)}
+@media(max-width:760px){.shell{padding:23px 13px 50px}.panel{padding:17px}.inventory-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.poleas{grid-template-columns:1fr}.head{align-items:flex-start}.head .logo{margin-top:2px}}
+@media(max-width:520px){.targets{grid-template-columns:1fr}.inventory-grid{grid-template-columns:1fr 1fr;gap:7px}.disc{padding:10px 8px;gap:4px}.disc .weight{min-width:45px;font-size:13px}.disc input{width:53px}.panel-heading .tag{display:none}}
+@media print{body{background:white;color:#222}.shell{max-width:none;padding:6px}.panel{box-shadow:none;background:white;border-color:#bbb}.target,.pulley,.leftovers,.disc{background:white;color:#222;border-color:#bbb}.secondary,.main-btn,.quick,.add-disc,.optionbox,#editingPanel,.footer{display:none!important}.muted,.hint,.result-summary,.footnotes,.side-info{color:#444}.chip{color:#222;background:#eee;border-color:#bbb}.result{display:block}.result-topline{color:#222}.panel:first-of-type{display:none}h1{font-size:24px}}
+
+
+.step{display:inline-block;margin-right:8px;font-size:11px;font-weight:900;color:#061c21;background:var(--mint);padding:5px 10px;border-radius:99px;vertical-align:2px}
+.inventory-table-wrap{overflow-x:auto}
+.inventory-table{border-collapse:collapse;width:100%;margin-top:15px;font-variant-numeric:tabular-nums}
+.inventory-table th,.inventory-table td{padding:11px 10px;border-bottom:1px solid var(--border);text-align:right;white-space:nowrap}
+.inventory-table th:first-child,.inventory-table td:first-child{text-align:left}
+.inventory-table th{color:var(--muted);font-size:12px;font-weight:800}
+.inventory-table tfoot{font-weight:800;color:var(--mint)}
+.inventory-table input{width:78px;max-width:100%;text-align:center;padding:8px}
+.inventory-table .row-remove{font-size:17px;padding:6px 10px;background:#27364d;border-radius:7px;color:var(--muted)}
+.allocation-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:14px 0}
+.stat{border:1px solid var(--border);border-radius:12px;background:var(--surface2);padding:11px}
+.stat strong{display:block;font-size:19px;line-height:1.3}.stat span{font-size:12px;color:var(--muted)}
+.panel-heading.compact{margin-bottom:9px}.actions-inline{display:flex;flex-wrap:wrap;gap:9px;align-items:center;margin-top:14px}
+.saved-list{display:grid;gap:10px;margin-top:15px}.saved-row{border:1px solid var(--border);background:#10192c;border-radius:13px;padding:13px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.saved-row strong{font-size:14px}.saved-row small{display:block;color:var(--muted)}.saved-row-buttons{display:flex;gap:7px;align-items:center}
+.saved-row-buttons button{padding:7px 10px}.warn{color:var(--gold);background:#302d27;border:1px solid #6a5a3c}
+.inventory-note{color:var(--muted);font-size:13px;margin-top:12px}.soft{color:var(--muted)}
+.result-save{background:#2d4c44;color:#d5ffe8;border:1px solid #5b9d82}
+@media(max-width:600px){.allocation-stats{grid-template-columns:1fr 1fr}.allocation-stats .stat:last-child{grid-column:span 2}.inventory-table th,.inventory-table td{padding:9px 5px;font-size:13px}.inventory-table input{width:54px;padding:7px 3px}.inventory-table .row-remove{padding:5px 6px}}
+@media print{#inventoryPanel,#presetsPanel,#saveBackupBtn,#loadBackupBtn,.result-buttons,.actions-inline,.target-box{display:none!important}.result{display:block}.panel{margin-bottom:5px}}
+</style></head><body>
+<div class="shell">
+  <header>
+    <div class="head"><div class="logo" aria-hidden="true">⚖</div><div><div class="eyebrow">Tu calculadora personal</div><h1>Discos para dos poleas</h1></div></div>
+    <p class="lead">Primero eliges los kilos, después ves qué discos colocar a cada lado y, más abajo, puedes consultar o modificar el reparto fijo de discos de cada polea. Cada polea usa <strong>solo sus discos</strong> y queda equilibrada.</p>
+  </header>
+  <main>
+    <section class="panel target-box">
+      <div class="panel-heading"><div><h2><span class="step">PASO 1</span> Kilos que quieres cargar</h2><p class="hint">Introduce el peso TOTAL de cada polea, sumando izquierda y derecha. Pueden ser diferentes.</p></div><div class="tag">2 POLEAS · 4 BARRAS</div></div>
+      <div class="targets">
+        <div class="target"><label for="target1">Polea 1 · kilos totales</label><div class="unit-field"><input id="target1" type="number" min="0" max="9999" step="0.5" inputmode="decimal" value="40"></div><div class="side-info" id="sideHint1">20 kg por cada lado</div></div>
+        <div class="target"><label for="target2">Polea 2 · kilos totales</label><div class="unit-field"><input id="target2" type="number" min="0" max="9999" step="0.5" inputmode="decimal" value="40"></div><div class="side-info" id="sideHint2">20 kg por cada lado</div></div>
+      </div>
+      <div class="quick" aria-label="Ejemplos de cargas"><button class="pill" data-preset="20,20">20 + 20 kg</button><button class="pill" data-preset="40,40">40 + 40 kg</button><button class="pill" data-preset="60,60">60 + 60 kg</button><button class="pill" data-preset="40,60">40 + 60 kg</button><button class="pill" data-preset="94.5,94">94,5 + 94 kg</button></div>
+      <div class="optionbox"><label for="maxDiscs">Máximo de discos por barra</label><input id="maxDiscs" type="number" placeholder="Sin límite" min="1" max="9999" step="1"><p class="hint">Opcional. Esta cifra no sustituye la comprobación del grosor de los discos y de los límites de la máquina.</p></div>
+      <div class="notice" id="validation" role="status" hidden></div>
+      <div class="actions"><button class="main-btn" id="calcBtn" type="button">Calcular los cuatro lados</button><span class="hint">Usa únicamente los discos reservados para cada polea.</span></div>
+    </section>
+
+
+
+    <section class="panel result" id="result" aria-live="polite"></section>
+
+
+    <section class="panel" id="inventoryPanel">
+      <div class="panel-heading"><div><h2><span class="step">PASO 3</span> Reparto fijo de discos</h2><p class="hint">Este es el inventario reservado para cada polea. Puedes modificarlo y queda guardado automáticamente en este navegador.</p></div><div class="tag">SIN MEZCLAR DISCOS</div></div>
+      <div class="allocation-stats">
+        <div class="stat"><strong id="grandTotal">188,5 kg</strong><span id="grandCount">72 discos en total</span></div>
+        <div class="stat"><strong id="stock1">94,5 kg</strong><span id="count1">Polea 1, inventario reservado</span></div>
+        <div class="stat"><strong id="stock2">94 kg</strong><span id="count2">Polea 2, inventario reservado</span></div>
+      </div>
+      <div class="inventory-table-wrap"><table class="inventory-table"><thead><tr><th>Tipo de disco</th><th>Tienes</th><th>Para polea 1</th><th>Para polea 2</th><th>Quitar</th></tr></thead><tbody id="discRows"></tbody><tfoot><tr><td>Totales</td><td id="footAll"></td><td id="foot1"></td><td id="foot2"></td><td></td></tr></tfoot></table></div>
+      <div class="notice" id="mathNote">Reparto recomendado: 94,5 kg para la polea 1 y 94 kg para la polea 2. Ambos inventarios permiten cargar todo su peso con los dos lados iguales. La diferencia de 0,5 kg es necesaria para aprovechar los 188,5 kg completos.</div>
+      <div class="actions-inline"><button class="secondary" type="button" id="autoSplitBtn">Repartir discos automáticamente</button><button class="small-link" type="button" id="resetBtn">Restaurar mis 72 discos originales</button></div>
+      <form class="add-disc" id="addForm"><div><label for="addWeight">Añadir disco de (kg)</label><input id="addWeight" type="number" inputmode="decimal" min="0.01" step="0.01" max="500" placeholder="Ej.: 7,5" required></div><div><label for="addCount">Cantidad</label><input id="addCount" type="number" min="1" max="999" step="1" value="2" required></div><button type="submit" class="secondary">+ Añadir discos</button></form>
+      <div class="inventory-note">En cada fila, el número de la polea 2 es el resto de los discos disponibles. Si ajustas el de la polea 1, el de la 2 cambia automáticamente. La calculadora no prestará discos entre ellas. Si cambias este reparto, vuelve a pulsar «Calcular los cuatro lados» arriba para actualizar el resultado.</div>
+    </section>
+
+
+    <section class="panel" id="presetsPanel">
+      <div class="panel-heading compact"><div><h2>Mis combinaciones guardadas</h2><p class="hint">Guarda la colocación exacta de los discos a izquierda y derecha para repetirla otro día.</p></div><div class="tag" id="savedTag">0 guardadas</div></div>
+      <div id="savedList" class="saved-list"></div>
+      <div class="actions-inline"><button type="button" class="secondary" id="saveBackupBtn">Exportar copia de seguridad</button><button type="button" class="secondary" id="loadBackupBtn">Importar copia</button><input type="file" id="backupFile" accept=".json,application/json" hidden></div>
+      <p class="inventory-note">Los datos se guardan en este navegador, en este dispositivo. Exporta una copia si quieres conservarlos al cambiar de teléfono, ordenador o navegador.</p>
+    </section>
+
+    <div class="footer"><strong>Importante:</strong> El programa iguala el peso en los dos soportes de cada polea y nunca supera los discos reservados. No calcula la resistencia efectiva del cable. Comprueba los límites de carga, la compatibilidad de los discos, la longitud útil de las barras y la fijación con cierres. Si el fabricante exige simetría también en el orden o tipo de disco, sigue sus indicaciones.</div>
+  </main>
+</div>
+<script>
+'use strict';
+
+// An exact bounded integer search in units of 0.01 kg. It never uses more plates than are owned.
+function solvePulleyLoads(plates, totalsKg, maxPerSide = 0, timeLimitMs = 4000) {
+  const t0 = (typeof performance !== 'undefined' ? performance.now() : Date.now());
+  const now = () => (typeof performance !== 'undefined' ? performance.now() : Date.now());
+  const W = plates.filter(p => p.count > 0).map(p => ({
+    kg: p.kg, w: Math.round(p.kg * 100), count: p.count
+  })).sort((a,b) => b.w - a.w);
+  const desired = totalsKg.map(kg => Math.round(kg * 50));
+  const target = [desired[0], desired[0], desired[1], desired[1]];
+  const limit = maxPerSide > 0 ? maxPerSide : 99999;
+  const initialMass = W.reduce((a, p) => a + p.w*p.count, 0);
+  const neededMass = target.reduce((a,b)=>a+b,0);
+  if (neededMass > initialMass) return {status:'impossible',reason:'No tienes suficientes kilos de discos para esa carga.'};
+  if (target.some(v=>v<0) || target.some(v=>!Number.isSafeInteger(v))) return {status:'impossible',reason:'Introduce pesos válidos.'};
+  if (!W.length) return neededMass === 0 ? {status:'ok', counts: [[],[],[],[]], rows: W, nodes:0} : {status:'impossible',reason:'No tienes discos disponibles.'};
+  // Necessary residue bound: a side not divisible by 0.5 kg needs at least
+  // one plate whose weight also is not a multiple of 0.5 kg.
+  const fractionalBars=target.filter(t=>t%50!==0).length;
+  const fractionalDiscs=W.reduce((s,p)=>s+(p.w%50!==0?p.count:0),0);
+  if(fractionalBars>fractionalDiscs) return {status:'impossible',reason:'Faltan discos de pesos fraccionarios para equilibrar los cuatro lados exactamente.'};
+  const n=W.length;
+  const suffixMass = new Array(n+1).fill(0);
+  const suffixCount = new Array(n+1).fill(0);
+  for(let i=n-1;i>=0;i--){suffixMass[i]=suffixMass[i+1]+W[i].w*W[i].count;suffixCount[i]=suffixCount[i+1]+W[i].count;}
+  // Independent subset-sum upper bounds on a single bar, used for safe branch pruning.
+  const reach = new Array(n+1);
+  const maxT = Math.max(...target);
+  reach[n] = new Uint8Array(maxT+1); reach[n][0]=1;
+  for(let i=n-1;i>=0;i--){
+    const w=W[i].w, c=W[i].count;
+    let arr=reach[i+1].slice();
+    for(let j=0;j<c;j++) for(let s=maxT;s>=w;s--) if(arr[s-w]) arr[s]=1;
+    reach[i]=arr;
+  }
+  if (target.some(t=>!reach[0][t])) return {status:'impossible',reason:'No puedes formar ese peso en cada lado con las denominaciones disponibles.'};
+  const assigned = Array.from({length:4},()=>new Array(n).fill(0));
+  const rem=target.slice();
+  const cnt=[0,0,0,0];
+  let nodes=0;
+  let timedOut=false;
+  const memo=new Set();
+  function dfs(i){
+    if ((++nodes & 2047) === 0 && (now()-t0 > timeLimitMs || nodes>4000000)) {timedOut=true;return false;}
+    if(i===n) return rem.every(x=>x===0);
+    let remTotal=rem.reduce((a,b)=>a+b,0);
+    if(remTotal>suffixMass[i]) return false;
+    const key = i + ':' + rem.join(',') + (maxPerSide>0 ? ':'+cnt.join(',') : '');
+    if(memo.has(key))return false;
+    const {w,count}=W[i];
+    const minUsed = Math.max(0, Math.ceil((remTotal-suffixMass[i+1])/w));
+    const maxUsed = Math.min(count, Math.floor(remTotal/w), rem.reduce((a,r,k)=>a+Math.min(Math.floor(r/w),limit-cnt[k]),0));
+    if(minUsed>maxUsed) {memo.add(key);return false;}
+    const caps=rem.map((r,k)=>Math.min(Math.floor(r/w), limit-cnt[k], count));
+    const possibilities=[];
+    for(let a=0;a<=caps[0];a++) for(let b=0;b<=Math.min(caps[1],count-a);b++) for(let c=0;c<=Math.min(caps[2],count-a-b);c++) {
+      const maxD=Math.min(caps[3],count-a-b-c);
+      const minD=Math.max(0,minUsed-a-b-c);
+      for(let d=minD;d<=maxD;d++){
+        const used=a+b+c+d;
+        if(used<minUsed||used>maxUsed)continue;
+        const ar=[a,b,c,d];
+        let possible=true;
+        for(let k=0;k<4;k++){
+          const newR=rem[k]-w*ar[k];
+          if(!reach[i+1][newR]) {possible=false;break;}
+        }
+        if(!possible)continue;
+        // Best-first: use larger denominations, distribute each size evenly over four bars,
+        // and keep matching plate counts within each pulley wherever practicable.
+        const totalR=remTotal||1;
+        let fair=0;
+        for(let k=0;k<4;k++){
+          const ideal= used * rem[k]/totalR;
+          fair+=(ar[k]-ideal)*(ar[k]-ideal);
+        }
+        const pairDifference=Math.abs(a-b)+Math.abs(c-d);
+        const perSideCounts=[cnt[0]+a,cnt[1]+b,cnt[2]+c,cnt[3]+d];
+        const cntMean=perSideCounts.reduce((s,v)=>s+v,0)/4;
+        const countFair=perSideCounts.reduce((s,v)=>s+Math.pow(v-cntMean,2),0);
+        const avgNext=suffixCount[i+1] ? suffixMass[i+1]/suffixCount[i+1] : w;
+        const estimatedFinal=ar.map((v,k)=>cnt[k]+v+(rem[k]-v*w)/avgNext);
+        const estMean=estimatedFinal.reduce((s,v)=>s+v,0)/4;
+        const estimatedFair=estimatedFinal.reduce((s,v)=>s+Math.pow(v-estMean,2),0);
+        const score= -used*1000 + fair*4 + pairDifference*.5 + countFair*.25 + estimatedFair*3;
+        possibilities.push({ar,score});
+      }
+    }
+    possibilities.sort((x,y)=>x.score-y.score);
+    for (const choice of possibilities){
+      const a=choice.ar;
+      for(let k=0;k<4;k++){rem[k]-=a[k]*w;cnt[k]+=a[k]; assigned[k][i]=a[k];}
+      if(dfs(i+1))return true;
+      for(let k=0;k<4;k++){rem[k]+=a[k]*w;cnt[k]-=a[k];assigned[k][i]=0;}
+      if(timedOut) return false;
+    }
+    if(memo.size < 150000) memo.add(key);
+    return false;
+  }
+  const success=dfs(0);
+  if(success){
+    const leftovers=W.map((p,j)=>p.count-assigned.reduce((acc,side)=>acc+side[j],0));
+    return {status:'ok', counts: assigned, rows:W, leftovers, nodes, elapsed:Math.round(now()-t0)};
+  }
+  if(timedOut)return {status:'timeout',reason:'Esta combinación necesita más búsqueda. Prueba con pesos cercanos o reduce las denominaciones disponibles.',nodes};
+  return {status:'impossible',reason:'No existe una distribución exacta con esos discos y los límites elegidos.',nodes};
+}
+
+
+'use strict';
+const ORIGINAL = [[10,6,3],[5,8,4],[3,2,1],[2.5,6,3],[2,16,8],[1.5,4,2],[1.25,2,2],[1,26,12],[0.5,2,1]].map(([kg,count,p1])=>({kg,count,p1}));
+const STORAGE='calculadora_2_poleas_inventarios_v3';
+let plates = ORIGINAL.map(x=>({...x}));
+let favorites=[], lastResult=null;
+const $=id=>document.getElementById(id);
+const fmt=n=>new Intl.NumberFormat('es-ES',{maximumFractionDigits:2}).format(Math.round(n*100)/100);
+const kgString=n=>fmt(n)+' kg';
+const mass=items=>items.reduce((v,p)=>v+p.kg*p.count,0);
+const stock=p=>plates.map(x=>({kg:x.kg,count:p===1?x.p1:x.count-x.p1}));
+const poolTotal=p=>mass(stock(p));
+const countStock=p=>stock(p).reduce((sum,x)=>sum+x.count,0);
+function cents(n){return Math.round(n*100);}
+function validPlate(p){return p&&Number.isFinite(p.kg)&&p.kg>0&&p.kg<=500&&Math.abs(p.kg*100-cents(p.kg))<1e-6&&Number.isInteger(p.count)&&p.count>=0&&p.count<=999&&Number.isInteger(p.p1)&&p.p1>=0&&p.p1<=p.count;}
+function store(){try{localStorage.setItem(STORAGE,JSON.stringify({plates,favorites,t1:Number($('target1').value),t2:Number($('target2').value),max:$('maxDiscs').value}));}catch(e){}}
+function load(){try{
+ const v3=JSON.parse(localStorage.getItem(STORAGE)||'null');
+ if(v3&&Array.isArray(v3.plates)&&v3.plates.length<=100&&v3.plates.every(validPlate)){
+  plates=v3.plates.map(p=>({kg:cents(p.kg)/100,count:p.count,p1:p.p1}));
+  if(Array.isArray(v3.favorites))favorites=v3.favorites.filter(f=>f&&typeof f.name==='string'&&Array.isArray(f.sides)&&f.sides.length===4).slice(0,100);
+  if(Number.isFinite(v3.t1))$('target1').value=v3.t1;
+  if(Number.isFinite(v3.t2))$('target2').value=v3.t2;
+  if(v3.max!==undefined)$('maxDiscs').value=v3.max;
+  return;
+ }
+ const old=JSON.parse(localStorage.getItem('poleas_calculadora_v2')||'null');
+ if(old&&Array.isArray(old.plates)&&old.plates.length&&old.plates.every(p=>p&&Number.isInteger(p.count)&&p.count>=0&&p.count<=999&&Number.isFinite(p.kg)&&p.kg>0)){
+  plates=old.plates.map(p=>({kg:p.kg,count:p.count,p1:Math.floor(p.count/2)})); autoSplit(false);
+  if(Number.isFinite(old.t1))$('target1').value=old.t1;
+  if(Number.isFinite(old.t2))$('target2').value=old.t2;
+  if(Number.isInteger(old.max))$('maxDiscs').value=old.max||'';
+ }
+ }catch(e){}
+}
+function autoSplit(update=true){
+ const original=plates.length===ORIGINAL.length&&ORIGINAL.every(o=>plates.some(p=>p.kg===o.kg&&p.count===o.count));
+ if(original){for(const p of plates)p.p1=ORIGINAL.find(o=>o.kg===p.kg).p1;}
+ else{
+  for(const p of plates)p.p1=Math.floor(p.count/2);
+  // Avoid assigning one 1.25 kg disk to each pole when both can stay together.
+  for(const p of plates){if(cents(p.kg)%50!==0 && p.count%2===0 && p.p1%2===1){p.p1++;}}
+  // Improve the balance of total kilos by moving a single whole denomination.
+  for(let tries=0;tries<plates.length*2;tries++){
+   const difference=poolTotal(1)-poolTotal(2);let best=null,improvement=0;
+   for(const p of plates)for(const direction of [-1,1]){
+    const next=p.p1+direction;if(next<0||next>p.count)continue;
+    if(cents(p.kg)%50!==0 && p.count%2===0 && next%2!==0)continue;
+    const nextDiff=difference+2*direction*p.kg;
+    const progress=Math.abs(difference)-Math.abs(nextDiff);
+    if(progress>improvement+1e-7){improvement=progress;best={p,next};}
+   }
+   if(!best)break;best.p.p1=best.next;
+  }
+ }
+ if(update){renderInventory();invalidate();store();showNotice('Reparto automático aplicado. Puedes ajustar las cantidades de cada polea antes de calcular.','success');}
+}
+function renderInventory(){
+ plates.sort((a,b)=>b.kg-a.kg);
+ const root=$('discRows');root.replaceChildren();
+ for(const p of plates){
+  const tr=document.createElement('tr');
+  const label=document.createElement('td');const strong=document.createElement('strong');strong.textContent=kgString(p.kg);label.append(strong);
+  const total=document.createElement('td'), first=document.createElement('td'), second=document.createElement('td');
+  const all=document.createElement('input');all.type='number';all.min='0';all.max='999';all.step='1';all.value=p.count;all.setAttribute('aria-label','Cantidad total de discos de '+kgString(p.kg));
+  const a=document.createElement('input');a.type='number';a.min='0';a.max=String(p.count);a.step='1';a.value=p.p1;a.setAttribute('aria-label','Discos de '+kgString(p.kg)+' reservados para polea 1');
+  const b=document.createElement('strong');b.textContent=String(p.count-p.p1);
+  all.addEventListener('change',()=>{const n=Number(all.value);if(!Number.isInteger(n)||n<0||n>999){all.value=p.count;return;}p.count=n;p.p1=Math.min(p.p1,n);a.max=String(n);a.value=p.p1;b.textContent=String(n-p.p1);afterEdit();});
+  a.addEventListener('change',()=>{const n=Number(a.value);if(!Number.isInteger(n)||n<0||n>p.count){a.value=p.p1;return;}p.p1=n;b.textContent=String(p.count-n);afterEdit();});
+  const remove=document.createElement('td'), btn=document.createElement('button');btn.className='row-remove';btn.type='button';btn.textContent='×';btn.title='Eliminar este tipo de disco';btn.setAttribute('aria-label','Eliminar discos de '+kgString(p.kg));btn.addEventListener('click',()=>{plates.splice(plates.indexOf(p),1);afterEdit();renderInventory();});
+  remove.append(btn);total.append(all);first.append(a);second.append(b);tr.append(label,total,first,second,remove);root.append(tr);
+ }
+ updateSummary();
+}
+function updateSummary(){
+ const all=mass(plates),totalDiscs=plates.reduce((a,p)=>a+p.count,0);
+ $('grandTotal').textContent=kgString(all);$('grandCount').textContent=totalDiscs+' discos en total';
+ $('stock1').textContent=kgString(poolTotal(1));$('count1').textContent=`Polea 1 · ${countStock(1)} discos reservados`;
+ $('stock2').textContent=kgString(poolTotal(2));$('count2').textContent=`Polea 2 · ${countStock(2)} discos reservados`;
+ $('footAll').textContent=totalDiscs+' discos';$('foot1').textContent=kgString(poolTotal(1));$('foot2').textContent=kgString(poolTotal(2));
+ const base=plates.length===ORIGINAL.length&&ORIGINAL.every(o=>plates.some(p=>p.kg===o.kg&&p.count===o.count&&p.p1===o.p1));
+ $('mathNote').textContent=base?'Reparto recomendado: 94,5 kg para la polea 1 y 94 kg para la polea 2. Ambos inventarios pueden cargarse completos con sus dos lados equilibrados. Los dos discos de 1,25 kg se reservan juntos para la polea 1.':`Inventarios separados: ${kgString(poolTotal(1))} en la polea 1 y ${kgString(poolTotal(2))} en la polea 2. La calculadora comprobará para cada carga si se pueden equilibrar los dos lados sin usar discos de la otra polea.`;
+}
+function afterEdit(){updateSummary();invalidate();store();}
+function invalidate(){$('result').classList.remove('visible');lastResult=null;clearNotice();}
+function showNotice(t,type='error'){$('validation').hidden=false;$('validation').className='notice '+type;$('validation').textContent=t;}
+function clearNotice(){$('validation').hidden=true;}
+function updateHints(){for(let i=1;i<=2;i++){const str=$('target'+i).value;const n=Number(str);$('sideHint'+i).textContent=str!==''&&Number.isFinite(n)&&n>=0?`${kgString(n/2)} por cada lado · máximo en inventario: ${kgString(poolTotal(i))}`:'Introduce un peso válido';}}
+function getInputs(){
+ const ss=[$('target1').value,$('target2').value];if(ss.some(s=>s.trim()===''))throw Error('Indica los kilos de ambas poleas, aunque una sea de 0 kg.');
+ const totals=ss.map(Number);
+ if(totals.some(t=>!Number.isFinite(t)||t<0||t>9999||Math.abs(t*100-cents(t))>1e-6))throw Error('Introduce pesos positivos con un máximo de dos decimales.');
+ if(totals.some(t=>Math.abs(t*50-Math.round(t*50))>1e-6))throw Error('Para repartir el peso entre dos barras, cada lado debe poder alcanzar una cantidad exacta con los incrementos de tus discos.');
+ const limS=$('maxDiscs').value;const limit=limS.trim()===''?0:Number(limS);if(!Number.isInteger(limit)||limit<0||limit>9999)throw Error('El límite por barra debe ser un entero positivo, o dejarse vacío.');
+ for(let i=0;i<2;i++)if(cents(totals[i])>cents(poolTotal(i+1)))throw Error(`La polea ${i+1} solo tiene ${kgString(poolTotal(i+1))} reservados. Para pedir ${kgString(totals[i])}, cambia primero el reparto del inventario.`);
+ return {totals,limit};
+}
+function solveIndependently(totals,limit){
+ const results=[];
+ for(let i=1;i<=2;i++){
+  const r=solvePulleyLoads(stock(i),[totals[i-1],0],limit,4200);
+  if(r.status!=='ok')return {status:r.status,reason:`Polea ${i}: ${r.reason||'no se pudo calcular'}. Comprueba los discos asignados a esta polea.`};
+  results.push(r);
+ }
+ const sides=results.flatMap(r=>[0,1].map(side=>r.counts[side].map((count,j)=>({kg:r.rows[j].kg,count})).filter(x=>x.count>0)));
+ return {status:'ok',sides,totals,limit};
+}
+function chips(node,items){if(!items.length){const span=document.createElement('span');span.className='empty';span.textContent='Sin discos';node.append(span);return;}for(const p of items){const span=document.createElement('span');span.className='chip';span.textContent=`${p.count} × ${fmt(p.kg)} kg`;node.append(span);}}
+function weighted(items){return items.reduce((s,p)=>s+p.kg*p.count,0);}
+function plateCount(items){return items.reduce((s,p)=>s+p.count,0);}
+function usedForPulley(result,index){const m=new Map();for(const side of result.sides.slice(index*2,index*2+2))for(const plate of side){const key=cents(plate.kg);m.set(key,(m.get(key)||0)+plate.count);}return m;}
+function validateResult(result){
+ if(!result||!Array.isArray(result.sides)||result.sides.length!==4||!Array.isArray(result.totals)||result.totals.length!==2)return false;
+ for(let pole=0;pole<2;pole++){
+  const allowed=new Map(stock(pole+1).map(p=>[cents(p.kg),p.count]));
+  const used=usedForPulley(result,pole);
+  for(const [kg,n] of used)if(!allowed.has(kg)||n>allowed.get(kg))return false;
+  for(let side=0;side<2;side++){
+   const s=result.sides[2*pole+side];
+   if(!Array.isArray(s)||s.some(p=>!p||!Number.isInteger(p.count)||p.count<0||!Number.isFinite(p.kg)))return false;
+   if(cents(weighted(s))*2!==cents(result.totals[pole]))return false;
+   if(result.limit>0 && plateCount(s)>result.limit)return false;
+  }
+ }
+ return true;
+}
+function buildReport(r){
+ const root=$('result');root.replaceChildren();root.classList.add('visible');
+ const totalDiscs=r.sides.reduce((s,items)=>s+plateCount(items),0);
+ const title=document.createElement('div');title.className='result-header';
+ const lhs=document.createElement('div');lhs.innerHTML='<div class="result-topline">✓ Los cuatro lados están equilibrados</div><h2><span class="step">PASO 2</span> Coloca estos discos</h2>';
+ const subtitle=document.createElement('p');subtitle.className='result-summary';subtitle.textContent=`${kgString(r.totals[0]+r.totals[1])} cargados · ${totalDiscs} discos utilizados · inventarios independientes`;lhs.append(subtitle);
+ const buttons=document.createElement('div');buttons.className='result-buttons';
+ const saveBtn=document.createElement('button');saveBtn.className='secondary result-save';saveBtn.textContent='☆ Guardar combinación';saveBtn.onclick=()=>saveFavorite(r);
+ const copyBtn=document.createElement('button');copyBtn.className='secondary';copyBtn.textContent='Copiar';copyBtn.onclick=()=>copyReport(r,copyBtn);
+ const printBtn=document.createElement('button');printBtn.className='secondary';printBtn.textContent='Imprimir';printBtn.onclick=()=>window.print();
+ buttons.append(saveBtn,copyBtn,printBtn);title.append(lhs,buttons);root.append(title);
+ const two=document.createElement('div');two.className='poleas';
+ for(let pole=0;pole<2;pole++){
+  const card=document.createElement('section');card.className='pulley p'+(pole+1);
+  const header=document.createElement('div');header.className='pulley-title';const name=document.createElement('h3');name.textContent='Polea '+(pole+1);const kg=document.createElement('div');kg.className='kg';kg.textContent=kgString(r.totals[pole]);header.append(name,kg);card.append(header);
+  const avail=document.createElement('p');avail.className='hint';avail.textContent=`Tu inventario fijo: ${kgString(poolTotal(pole+1))} (${countStock(pole+1)} discos)`;card.append(avail);
+  for(let side=0;side<2;side++){
+   const items=r.sides[pole*2+side];const lane=document.createElement('div');lane.className='lane';
+   const label=document.createElement('div');label.className='lane-head';const text=document.createElement('span');text.textContent=side===0?'⬅ Lado izquierdo':'Lado derecho ➡';const x=document.createElement('span');x.className='load';x.textContent=`${kgString(weighted(items))} · ${plateCount(items)} discos`;label.append(text,x);lane.append(label);
+   const cs=document.createElement('div');cs.className='chips';chips(cs,items);lane.append(cs);card.append(lane);
+  }
+  const use=usedForPulley(r,pole);const remain=stock(pole+1).map(p=>({kg:p.kg,count:p.count-(use.get(cents(p.kg))||0)})).filter(p=>p.count>0);
+  const foot=document.createElement('div');foot.className='leftovers';const t=document.createElement('strong');t.textContent=`Discos sin usar de esta polea: ${kgString(weighted(remain))}`;foot.append(t);const left=document.createElement('div');left.className='chips';chips(left,remain);foot.append(left);card.append(foot);two.append(card);
+ }
+ root.append(two);
+ const note=document.createElement('p');note.className='footnotes';note.textContent='Cada polea utiliza exclusivamente sus discos asignados en el apartado «Reparto fijo de discos». El programa equilibra los kilos de los dos lados; la cantidad y denominación de discos en cada barra puede ser distinta.';root.append(note);
+}
+function reportText(r){const lines=['CALCULADORA DE DOS POLEAS · INVENTARIOS SEPARADOS',''];
+ for(let p=0;p<2;p++){
+  lines.push(`POLEA ${p+1} · inventario ${kgString(poolTotal(p+1))} · carga ${kgString(r.totals[p])}`);
+  for(let s=0;s<2;s++){const items=r.sides[p*2+s];lines.push(`${s===0?'Izquierda':'Derecha'} (${kgString(weighted(items))}): ${items.map(x=>`${x.count} × ${fmt(x.kg)} kg`).join(' + ')||'sin discos'}`);}
+  const used=usedForPulley(r,p);const remain=stock(p+1).map(x=>({kg:x.kg,count:x.count-(used.get(cents(x.kg))||0)})).filter(x=>x.count>0);
+  lines.push(`Sobrantes de la polea ${p+1}: ${remain.map(x=>`${x.count} × ${fmt(x.kg)} kg`).join(', ')||'ninguno'}`,'');
+ }return lines.join('\n');}
+async function copyReport(r,b){const txt=reportText(r);try{await navigator.clipboard.writeText(txt);b.textContent='✓ Copiado';setTimeout(()=>b.textContent='Copiar',1600);}catch(e){const el=document.createElement('textarea');el.value=txt;document.body.append(el);el.select();const ok=document.execCommand('copy');b.textContent=ok?'✓ Copiado':'No se pudo copiar';el.remove();}}
+function calculate(){
+ let i;try{i=getInputs();}catch(e){showNotice(e.message);invalidateResult();return;}
+ store();clearNotice();const b=$('calcBtn');b.disabled=true;b.textContent='Calculando…';
+ setTimeout(()=>{
+  let r;try{r=solveIndependently(i.totals,i.limit);}catch(e){r={status:'error',reason:'Error al calcular. Prueba a introducir menos tipos de disco.'};}
+  b.disabled=false;b.textContent='Calcular los cuatro lados';
+  if(r.status==='ok'&&validateResult(r)){lastResult=r;buildReport(r);rootScroll();}
+  else{invalidateResult();showNotice(r.reason||'No se puede equilibrar esta distribución. Cambia los pesos solicitados o el reparto inicial de discos.');}
+ },20);
+}
+function rootScroll(){/* Preserve input context on mobile; results appear immediately below. */}
+function invalidateResult(){lastResult=null;$('result').classList.remove('visible');}
+function saveFavorite(r){
+ const suggested=`Polea 1 ${fmt(r.totals[0])} kg · Polea 2 ${fmt(r.totals[1])} kg`;
+ const s=window.prompt('Nombre de esta combinación:',suggested);if(s===null)return;const name=s.trim().slice(0,80);if(!name)return;
+ const stored={id:String(Date.now())+'-'+String(Math.floor(Math.random()*100000)),name,totals:r.totals,sides:r.sides.map(side=>side.map(x=>({...x}))),limit:r.limit||0};
+ favorites.unshift(stored);favorites=favorites.slice(0,100);store();renderSaved();showNotice(`Combinación «${name}» guardada en este navegador.`,'success');
+}
+function renderSaved(){const root=$('savedList');root.replaceChildren();$('savedTag').textContent=favorites.length+' guardadas';
+ if(!favorites.length){const empty=document.createElement('p');empty.className='hint';empty.textContent='Todavía no has guardado ninguna. Calcula un peso y pulsa «Guardar combinación». ';root.append(empty);return;}
+ for(const fav of favorites){const wrap=document.createElement('div');wrap.className='saved-row';
+  const info=document.createElement('div');const title=document.createElement('strong');title.textContent=fav.name;const sub=document.createElement('small');sub.textContent=`Polea 1: ${kgString(fav.totals[0])} · Polea 2: ${kgString(fav.totals[1])}`;info.append(title,sub);
+  const buttons=document.createElement('div');buttons.className='saved-row-buttons';const open=document.createElement('button');open.type='button';open.className='secondary';open.textContent='Ver reparto';open.onclick=()=>{
+   if(!validateResult(fav)){showNotice('Esta combinación guardada ya no es compatible con el reparto actual de los discos. Restaura el inventario correspondiente o vuelve a calcularla.');return;}
+   $('target1').value=fav.totals[0];$('target2').value=fav.totals[1];$('maxDiscs').value=fav.limit||'';
+   updateHints();lastResult=fav;buildReport(fav);store();clearNotice();$('result').scrollIntoView({behavior:'smooth',block:'start'});
+  };
+  const remove=document.createElement('button');remove.className='secondary';remove.type='button';remove.title='Borrar combinación';remove.textContent='×';remove.setAttribute('aria-label','Eliminar combinación '+fav.name);remove.onclick=()=>{favorites=favorites.filter(x=>x.id!==fav.id);store();renderSaved();};buttons.append(open,remove);wrap.append(info,buttons);root.append(wrap);
+ }
+}
+function exportData(){const payload=JSON.stringify({version:3,plates,favorites,t1:Number($('target1').value),t2:Number($('target2').value),max:$('maxDiscs').value},null,2);
+ const blob=new Blob([payload],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='mis-poleas-copia-seguridad.json';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);}
+function importData(file){if(!file)return;const fr=new FileReader();fr.onload=()=>{try{
+ const d=JSON.parse(fr.result);if(d.version!==3||!Array.isArray(d.plates)||d.plates.length>100||!d.plates.every(validPlate)||!Array.isArray(d.favorites)||d.favorites.length>100)throw Error('Archivo incompatible');
+ plates=d.plates.map(x=>({...x}));favorites=d.favorites.filter(f=>f&&typeof f.name==='string'&&Array.isArray(f.sides)&&f.sides.length===4);
+ if(Number.isFinite(d.t1))$('target1').value=d.t1;if(Number.isFinite(d.t2))$('target2').value=d.t2;if(d.max!==undefined)$('maxDiscs').value=d.max;
+ renderInventory();renderSaved();updateHints();invalidate();store();showNotice('Copia importada correctamente.','success');
+ }catch(e){showNotice('No se pudo importar: el archivo no contiene una copia de esta calculadora.');}};fr.readAsText(file);}
+$('calcBtn').addEventListener('click',calculate);
+for(let i=1;i<=2;i++)$('target'+i).addEventListener('input',()=>{updateHints();invalidate();store();});
+$('maxDiscs').addEventListener('input',()=>{invalidate();store();});
+for(const p of document.querySelectorAll('[data-preset]'))p.addEventListener('click',()=>{const [a,b]=p.dataset.preset.split(',');$('target1').value=a;$('target2').value=b;updateHints();calculate();});
+$('autoSplitBtn').addEventListener('click',()=>{autoSplit();updateHints();});
+$('resetBtn').addEventListener('click',()=>{plates=ORIGINAL.map(x=>({...x}));renderInventory();invalidate();store();updateHints();showNotice('Inventario original restaurado y repartido: 94,5 kg / 94 kg.','success');});
+$('addForm').addEventListener('submit',e=>{e.preventDefault();const kg=Number($('addWeight').value.replace(',','.')),count=Number($('addCount').value);
+ if(!(Number.isFinite(kg)&&kg>0&&kg<=500&&Math.abs(kg*100-cents(kg))<1e-6)||!Number.isInteger(count)||count<1||count>999){showNotice('Indica un peso válido y una cantidad entera.');return;}
+ const k=cents(kg)/100;let p=plates.find(p=>cents(p.kg)===cents(k));if(p){if(p.count+count>999){showNotice('El máximo es de 999 discos por tipo.');return;}p.count+=count;p.p1+=Math.floor(count/2);}else plates.push({kg:k,count,p1:Math.floor(count/2)});
+ $('addWeight').value='';renderInventory();invalidate();store();updateHints();});
+$('saveBackupBtn').addEventListener('click',exportData);
+$('loadBackupBtn').addEventListener('click',()=>$('backupFile').click());
+$('backupFile').addEventListener('change',e=>{importData(e.target.files[0]);e.target.value='';});
+load();renderInventory();renderSaved();updateHints();calculate();
+// Al publicar el paquete como una web HTTPS, permite usarla sin conexión tras la primera visita.
+if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
+  window.addEventListener('load', () => { navigator.serviceWorker.register('./service-worker.js').catch(()=>{}); });
+}
+</script></body></html>
